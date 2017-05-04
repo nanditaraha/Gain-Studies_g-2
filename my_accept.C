@@ -1,7 +1,3 @@
-
-
-
-
 void my_accept()
 {
 
@@ -32,7 +28,6 @@ void my_accept()
   double para[10]={p0,p1,p2,p3,p4,p5,p6,p7,p8,p9};
   double average = phase->Mean(0,1,para,0.00001);
 
-
   //ASYMMETRY...
   TF1* Asy = new TF1("Asy","(-8.*x^2+x+1.)/(4.*x^2-5.*x-5.)",0.,1.);
   Asy->SetNpx(10000000);
@@ -58,14 +53,21 @@ void my_accept()
   //double average1 = N_Asy_p_cos->Mean(0,1,para,0.00001);
   
   
-  TF1 *f1 = new TF1("f1","(-0.01334+2.86*x-10.94*x^2+24.106*x^3-18.4*x^4-6.57*x^5+16.58*x^6-6.87*x^7)*(1-exp((x-0.998)/2.55625e-03))", 0,1);
-  TF1 *f3 = new TF1("f3","N*Asy*cos(phase)*x*f1",0,1);
-  TF1 *f4 = new TF1("f4","-N*Asy*sin(phase)*x*f1",0,1);
+  TF1 *Acc = new TF1("Acc","(-0.01334+2.86*x-10.94*x^2+24.106*x^3-18.4*x^4-6.57*x^5+16.58*x^6-6.87*x^7)*(1-exp((x-0.998)/2.55625e-03))", 0,1);
 
-  cout<<"Integral = "<<f4->Integral(0,1,0.001)<<"\n";
+  TF1 *f2 = new TF1("f2","N*Acc",0,1);
+  TF1 *f3 = new TF1("f3","N*Asy*cos(phase)*Acc",0,1);
+  TF1 *f4 = new TF1("f4","-N*Asy*sin(phase)*Acc",0,1);
+
+  printf("Integral = %f \n",f4->Integral(0,1,0.00001));
   
-  f3->Draw();
-  
+  f4->Draw();
+  TLatex latex;
+  latex.SetTextSize(0.037);
+  latex.SetTextColor(kRed);
+  latex.DrawLatex(0.1,-0.002,"#int_{0}^{1} b(y) Acc(y) dy = -0.002633");
+  gPad->SetGridx();
+  gPad->SetGridy();
 }
 
 
